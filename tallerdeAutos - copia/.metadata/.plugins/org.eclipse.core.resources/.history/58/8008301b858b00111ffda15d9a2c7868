@@ -1,0 +1,205 @@
+/* ============================================================
+   ESTADO GLOBAL Y ADAPTACIÓN DE API A SERVLET JAVA (/api)
+   ============================================================ */
+const CATALOGOS = { tipo_documento:[], marca_vehiculo:[], marca_producto:[], categoria_producto:[], forma_pago:[], rol:[], almacenes:[] };
+let SECCION_ACTUAL = 'dashboard';
+let ORDEN_ACTUAL = null;
+
+async function api(action, { method = 'GET', params = null, body = null } = {}) {
+  let url = `api?action=${action}`;
+  if (params) url += '&' + new URLSearchParams(params).toString();
+  const opts = { method };
+  if (body) { opts.headers = { 'Content-Type': 'application/json' }; opts.body = JSON.stringify(body); }
+  const res = await fetch(url, opts);
+  const json = await res.json();
+  if (!json.ok) throw new Error(json.error || 'Error desconocido');
+  return json.data;
+}
+
+function toast(msg, tipo = 'ok') {
+  const t = document.createElement('div');
+  t.className = `toast ${tipo}`;
+  t.textContent = msg;
+  document.body.appendChild(t);
+  setTimeout(() => t.remove(), 3800);
+}
+function fmt(n){ return 'S/ ' + Number(n ?? 0).toFixed(2); }
+function fmtDate(s){ if(!s) return '—'; return String(s).replace('T',' ').slice(0,16); }
+function esc(s){ return (s ?? '').toString().replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+function badgeEstado(estado){
+  const clave = (estado||'').toLowerCase().replace(/ /g,'_');
+  return `<span class="badge ${clave}">${esc(estado||'—')}</span>`;
+}
+
+async function logout(){ try{ await api('logout',{method:'POST',body:{}}); }catch(e){} window.location.href='login.jsp'; }
+
+/* ============================================================
+   NAVEGACIÓN
+   ============================================================ */
+const SECCIONES = [
+  { id:'dashboard', label:'Resumen', icon:'◆' },
+  { id:'nueva_orden', label:'Nueva orden', icon:'＋' },
+  { id:'ordenes', label:'Órdenes de servicio', icon:'▤' },
+  { id:'clientes', label:'Clientes', icon:'☺' },
+  { id:'vehiculos', label:'Vehículos', icon:'▭' },
+  { id:'productos', label:'Repuestos y servicios', icon:'⚙' },
+  { id:'compras', label:'Compras', icon:'⇄' },
+  { id:'usuarios', label:'Usuarios', icon:'☰' },
+  { id:'reportes', label:'Reportes', icon:'▦' },
+];
+
+function renderNav(){
+  document.getElementById('nav').innerHTML = SECCIONES.map(s =>
+    `<button class="nav-item ${s.id===SECCION_ACTUAL?'active':''}" data-seccion="${s.id}">
+       <span>${s.icon}</span> ${s.label}
+     </button>`).join('');
+  document.querySelectorAll('.nav-item').forEach(el => el.addEventListener('click', () => ir(el.dataset.seccion)));
+}
+
+async function ir(seccion){
+  SECCION_ACTUAL = seccion;
+  renderNav();
+  const main = document.getElementById('main');
+  main.innerHTML = '<div class="empty">Cargando…</div>';
+  try {
+    const renderers = {
+      dashboard: renderDashboard, nueva_orden: renderNuevaOrden, ordenes: renderOrdenes,
+      clientes: renderClientes, vehiculos: renderVehiculos, productos: renderProductos,
+      compras: renderCompras, usuarios: renderUsuarios, reportes: renderReportes,
+    };
+    await renderers[seccion](main);
+  } catch (e) {
+    main.innerHTML = `<div class="card">Error al cargar: ${esc(e.message)}</div>`;
+  }
+}
+
+/* ============================================================
+   COMPONENTES REUTILIZABLES
+   ============================================================ */
+function selectConAlta(id, catalogo, opciones, extraAttr = '', placeholder = 'Seleccionar…'){
+  const opts = opciones.map(o => `<option value="${o.id}">${esc(o.nombre)}</option>`).join('');
+  return `<div class="select-with-add">
+      <select id="${id}" ${extraAttr}><option value="">${placeholder}</option>${opts}</select>
+      <button type="button" class="btn btn-sm btn-icon" title="Crear nuevo" onclick="altaCatalogo('${catalogo}','${id}')">＋</button>
+    </div>`;
+}
+
+async function altaCatalogo(catalogo, selectId, extra = {}){
+  const nombre = prompt('Nombre del nuevo registro:');
+  if (!nombre) return;
+  try {
+    let data;
+    if (catalogo === 'modelo_vehiculo') {
+      const idMarca = document.getElementById(extra.marcaSelectId).value;
+      if (!idMarca) { toast('Primero selecciona la marca.', 'error'); return; }
+      data = await api('crear_modelo_vehiculo', { method:'POST', body:{ id_marca:idMarca, nombre } });
+    } else {
+      const accion = { marca_vehiculo:'crear_marca_vehiculo', marca_producto:'crear_marca_producto', categoria_producto:'crear_categoria_producto' }[catalogo];
+      data = await api(accion, { method:'POST', body:{ nombre } });
+    }
+    const sel = document.getElementById(selectId);
+    const opt = document.createElement('option');
+    opt.value = data.id; opt.textContent = data.nombre; opt.selected = true;
+    sel.appendChild(opt);
+    toast('Registro creado y seleccionado.');
+  } catch (e) { toast(e.message, 'error'); }
+}
+
+async function cargarModelos(idMarca, selectModeloId){
+  const sel = document.getElementById(selectModeloId);
+  sel.innerHTML = '<option value="">Cargando…</option>';
+  if (!idMarca) { sel.innerHTML = '<option value="">Seleccionar…</option>'; return; }
+  const modelos = await api('listar_modelos_vehiculo', { params:{ id_marca:idMarca } });
+  sel.innerHTML = '<option value="">Seleccionar…</option>' + modelos.map(m => `<option value="${m.id}">${esc(m.nombre)}</option>`).join('');
+}
+
+function cerrarModal(){ document.querySelector('.modal-bg')?.remove(); }
+function abrirModal(html){
+  cerrarModal();
+  const bg = document.createElement('div');
+  bg.className = 'modal-bg';
+  bg.innerHTML = `<div class="modal">${html}</div>`;
+  bg.addEventListener('click', e => { if (e.target === bg) cerrarModal(); });
+  document.body.appendChild(bg);
+}
+
+function tablaHtml(columnas, filas, onRowClick){
+  if (!filas.length) return '<div class="empty">No hay registros.</div>';
+  const head = columnas.map(c => `<th>${c.label}</th>`).join('');
+  const body = filas.map((f, i) => `<tr data-idx="${i}">${columnas.map(c => `<td>${c.render ? c.render(f) : esc(f[c.key])}</td>`).join('')}</tr>`).join('');
+  const id = 'tbl_' + Math.random().toString(36).slice(2, 8);
+  setTimeout(() => {
+    if (!onRowClick) return;
+    document.getElementById(id)?.querySelectorAll('tbody tr').forEach(tr => tr.addEventListener('click', () => onRowClick(filas[tr.dataset.idx])));
+  }, 0);
+  return `<div class="table-wrap"><table id="${id}"><thead><tr>${head}</tr></thead><tbody>${body}</tbody></table></div>`;
+}
+
+async function precargarCatalogos(){
+  try {
+    const [td, mv, mp, cp, fp, roles, almacenes] = await Promise.all([
+      api('listar_catalogo', { params:{ tabla:'tipo_documento' } }),
+      api('listar_catalogo', { params:{ tabla:'marca_vehiculo' } }),
+      api('listar_catalogo', { params:{ tabla:'marca_producto' } }),
+      api('listar_catalogo', { params:{ tabla:'categoria_producto' } }),
+      api('listar_catalogo', { params:{ tabla:'forma_pago' } }),
+      api('listar_catalogo', { params:{ tabla:'rol' } }),
+      api('listar_almacenes', {}),
+    ]);
+    Object.assign(CATALOGOS, { tipo_documento:td, marca_vehiculo:mv, marca_producto:mp, categoria_producto:cp, forma_pago:fp, rol:roles, almacenes });
+  } catch(e) {}
+}
+
+/* ============================================================
+   DASHBOARD Y DEMÁS SECCIONES
+   ============================================================ */
+async function renderDashboard(main){
+  let k = { ordenes_activas:0, en_pausa:0, ingresos_hoy:0, ingresos_ayer:0, productos_bajo_stock:0, tecnicos_disponibles:0, tecnicos_total:0 };
+  try { k = await api('kpis_resumen', {}); } catch(e){}
+  main.innerHTML = `
+    <div class="page-head"><div><h1>Resumen del taller</h1><div class="subtitle">Estado operativo del día</div></div></div>
+    <div class="kpis">
+      <div class="kpi"><div class="v">${k.ordenes_activas}</div><div class="l">Órdenes activas</div></div>
+      <div class="kpi"><div class="v">${k.en_pausa}</div><div class="l">Intervenciones pausadas</div></div>
+      <div class="kpi"><div class="v">${fmt(k.ingresos_hoy)}</div><div class="l">Ingresos hoy</div></div>
+      <div class="kpi"><div class="v">${fmt(k.ingresos_ayer)}</div><div class="l">Ingresos ayer</div></div>
+      <div class="kpi"><div class="v">${k.productos_bajo_stock}</div><div class="l">Repuestos bajo stock mínimo</div></div>
+      <div class="kpi"><div class="v">${k.tecnicos_disponibles}/${k.tecnicos_total}</div><div class="l">Técnicos disponibles</div></div>
+    </div>
+    <div class="card"><h2>Órdenes recientes</h2><div id="dash-ordenes"></div></div>`;
+  try {
+    const ordenes = (await api('listar_ordenes', {})).slice(0, 8);
+    document.getElementById('dash-ordenes').innerHTML = tablaHtml([
+      { key:'codigo', label:'Código' }, { key:'cliente', label:'Cliente' }, { key:'placa', label:'Placa' },
+      { key:'estado_intervencion', label:'Estado', render:f => badgeEstado(f.estado_intervencion) },
+      { key:'total_ii', label:'Total', render:f => fmt(f.total_ii) },
+    ], ordenes, f => abrirDetalleOrden(f.id));
+  } catch(e) {}
+}
+
+async function renderNuevaOrden(main){
+  main.innerHTML = `<div class="page-head"><div><h1>Nueva orden de servicio</h1></div></div><div class="card"><div class="row-inline"><div class="field"><label>Placa</label><input id="no-placa" style="text-transform:uppercase"></div><button class="btn btn-amber" onclick="buscarPlacaOrden()">Buscar</button></div></div><div id="no-resultado"></div>`;
+}
+async function buscarPlacaOrden(){
+  const placa = document.getElementById('no-placa').value.trim();
+  if(!placa) return;
+  try {
+    const veh = await api('buscar_vehiculo', { params:{ placa } });
+    // Lógica adicional para renderizar formulario de nueva orden según exista o no el vehículo
+  } catch(e){ toast(e.message, 'error'); }
+}
+
+async function renderOrdenes(main){ main.innerHTML = '<div class="card">Módulo de órdenes</div>'; }
+async function renderClientes(main){ main.innerHTML = '<div class="card">Módulo de clientes</div>'; }
+async function renderVehiculos(main){ main.innerHTML = '<div class="card">Módulo de vehículos</div>'; }
+async function renderProductos(main){ main.innerHTML = '<div class="card">Módulo de productos</div>'; }
+async function renderCompras(main){ main.innerHTML = '<div class="card">Módulo de compras</div>'; }
+async function renderUsuarios(main){ main.innerHTML = '<div class="card">Módulo de usuarios</div>'; }
+async function renderReportes(main){ main.innerHTML = '<div class="card">Módulo de reportes</div>'; }
+
+// Inicialización de la aplicación
+(async function init(){
+  await precargarCatalogos();
+  renderNav();
+  ir('dashboard');
+})();

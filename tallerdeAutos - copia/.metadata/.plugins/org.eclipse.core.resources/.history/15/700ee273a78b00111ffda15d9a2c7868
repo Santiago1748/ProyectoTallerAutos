@@ -1,0 +1,118 @@
+package servlet;
+
+import java.io.IOException;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+/**
+ * Servlet implementation class UsuarioServlet
+ */
+@WebServlet("/UsuarioServlet")
+public class UsuarioServlet extends HttpServlet {
+	private static final long serialVersionUID = 1L;
+       
+    /**
+     * @see HttpServlet#HttpServlet()
+     */
+    public UsuarioServlet() {
+        super();
+        // TODO Auto-generated constructor stub
+    }
+
+	/**
+	 * @see HttpServlet#service(HttpServletRequest request, HttpServletResponse response)
+	 */
+	protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		String tipo = request.getParameter("tipo");
+		switch(tipo) {
+		case "lis": listarUsuario(request,response); break;
+		case "regis": registrarUsuario(request,response);break;
+		case "info": detalleUsuario(request,response);break;
+		case "edit": actualizarUsuario(request,response); break;
+		case "grabaredit": grabarActuqalizarUsuario(request, response); break;
+		
+		case "eliminar": eliminarUsuario(request,response); break;
+		default:
+			request.setAttribute("mensaje", "Ocurrió un problema");
+			request.getRequestDispatcher("mantenUsuario.jsp").forward(request, response);
+		
+		
+		}
+		
+		
+		
+		
+	}
+
+	protected void registrarUsuario(HttpServletRequest request, HttpServletResponse response)throws ServletException, IOException {
+		String codigo = request.getParameter("txtCod");
+		String usuario = request.getParameter("txtUsuario");
+		String password = request.getParameter("txtPassword");
+		 
+	    LocalDateTime ultimaSesion = LocalDateTime.now();//la fecha de hoyy por defecto
+		
+	    String rol = request.getParameter("rol");
+	    int id_rol = Integer.parseInt(rol);
+	    
+	    LocalDateTime fecha_crea = LocalDateTime.now();
+	    LocalDateTime fecha_modif = LocalDateTime.now();
+	    
+	    String  empleadoStr = request.getParameter("cboEmpleado");//lo captura como string al booleano
+		// 2. Lo conviertes a un booleano (aquí agregas esta parte)
+	    boolean empleado = Boolean.parseBoolean(empleadoStr);
+	    String apellido = request.getParameter("txtApellidos");
+	    String nombre = request.getParameter("txtNombres");
+	    
+	    String fechaNacStr = request.getParameter("txtFechaNac");
+	    LocalDate fechaNacimiento = null;
+	    if (fechaNacStr != null && !fechaNacStr.isEmpty()) {
+	        fechaNacimiento = LocalDate.parse(fechaNacStr); // Convierte el String a LocalDate
+	    }
+	    String celular = request.getParameter("txtCelular");
+	    String correo = request.getParameter("txtCorreo");
+	    double salario = Double.parseDouble(request.getParameter("txtSalario"));
+	    String estadoStr = request.getParameter("cboEstado");
+	    boolean estado = Boolean.parseBoolean(estadoStr);
+	    
+	    
+	    
+		
+	    
+		
+	}
+	
+
+	protected void listarUsuario(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException{
+		// TODO Auto-generated method stub
+		
+	}
+	protected  void eliminarUsuario(HttpServletRequest request, HttpServletResponse response)throws ServletException, IOException {
+		// TODO Auto-generated method stub
+		
+	}
+
+	protected void grabarActuqalizarUsuario(HttpServletRequest request, HttpServletResponse response)throws ServletException, IOException {
+		// TODO Auto-generated method stub
+		
+	}
+
+	protected void actualizarUsuario(HttpServletRequest request, HttpServletResponse response)throws ServletException, IOException {
+		// TODO Auto-generated method stub
+		
+	}
+
+	protected void detalleUsuario(HttpServletRequest request, HttpServletResponse response)throws ServletException, IOException {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+
+
+}

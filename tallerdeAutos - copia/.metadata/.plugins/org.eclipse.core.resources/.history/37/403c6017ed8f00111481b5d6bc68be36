@@ -1,0 +1,9 @@
+package util;
+
+public class SessionProject {
+	public void saveSessionString () {
+		
+		
+	}
+
+}

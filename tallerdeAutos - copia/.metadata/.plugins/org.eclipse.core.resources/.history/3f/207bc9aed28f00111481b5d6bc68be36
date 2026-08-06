@@ -1,0 +1,9 @@
+package interfaces;
+
+import entidad.Usuario;
+
+public interface UsuarioDAO {
+	public Usuario validarLogin(String usu, String pwd);
+	
+
+}

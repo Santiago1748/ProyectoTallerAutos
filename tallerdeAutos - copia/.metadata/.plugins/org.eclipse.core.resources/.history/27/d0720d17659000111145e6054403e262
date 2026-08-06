@@ -1,0 +1,51 @@
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Taller Fortuna — Panel de control</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<!-- Enlace al archivo CSS externo -->
+<link rel="stylesheet" href="css/index.css">
+</head>
+<body>
+<div class="shell">
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="brand-mark"></div>
+      <div class="brand-text"><p class="display">Taller Fortuna</p><span>Panel de gestión</span></div>
+    </div>
+    <!-- MENÚ LATERAL TRADICIONAL CON ENLACES DIRECTOS A JSP -->
+    <nav id="nav">
+      <ul>
+        <li><a href="resumen.jsp" target="contentFrame">Resumen</a></li>
+        <li><a href="nueva_orden.jsp" target="contentFrame">Nueva orden</a></li>
+        <li><a href="ordenes.jsp" target="contentFrame"">Órdenes de servicio</a></li>
+        <li><a href="clientes.jsp "target="contentFrame">Clientes</a></li>
+        <li><a href="vehiculos.jsp"target="contentFrame">Vehículos</a></li>
+        <li><a href="repuestos.jsp"target="contentFrame">Repuestos y servicios</a></li>
+        <li><a href="compras.jsp"target="contentFrame">Compras</a></li>
+        <li><a href="listUsuarios.jsp"target="contentFrame">Usuarios</a></li>
+        <li><a href="reportes.jsp"target="contentFrame">Reportes</a></li>
+      </ul>
+    </nav>
+    <nav id="nav"></nav>
+    <div class="user-box">
+      <div class="u-name"></div>
+      <div class="u-rol"></div>
+      <button class="btn-logout" onclick="logout()">Cerrar sesión</button>
+    </div>
+  </aside>
+  <main id="main">
+  <iframe name="contentFrame" id="contentFrame" src="dashboard.jsp" style="width: 100%; height: 100%; border: none;"></iframe>
+  </main>
+  </main>
+</div>
+
+<!-- Enlace al archivo JS externo -->
+<script src="js/index.js"></script>
+</body>
+</html>

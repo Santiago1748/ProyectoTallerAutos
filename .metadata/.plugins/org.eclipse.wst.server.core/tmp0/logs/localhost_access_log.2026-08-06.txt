@@ -1,0 +1,5 @@
+127.0.0.1 - - [06/Aug/2026:17:06:12 -0500] "GET / HTTP/1.1" 404 688
+0:0:0:0:0:0:0:1 - - [06/Aug/2026:17:06:13 -0500] "GET /TallerMecanico/login.jsp HTTP/1.1" 200 2358
+0:0:0:0:0:0:0:1 - - [06/Aug/2026:17:06:13 -0500] "GET /TallerMecanico/css/login.css HTTP/1.1" 200 4282
+0:0:0:0:0:0:0:1 - - [06/Aug/2026:17:06:13 -0500] "GET /TallerMecanico/js/login.js HTTP/1.1" 200 1315
+0:0:0:0:0:0:0:1 - - [06/Aug/2026:17:06:13 -0500] "GET /favicon.ico HTTP/1.1" 404 771

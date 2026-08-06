@@ -1,0 +1,233 @@
+package model;
+import java.util.ArrayList;
+import java.util.List;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.List;
+
+import entidad.Usuario;
+import interfaces.UsuarioInterface;
+import util.MySqlConexion;
+
+public class UsuarioModel implements UsuarioInterface{
+
+	
+	public int regisUsuario(Usuario regUsu) {
+	
+		int value = 0;
+	 
+		Connection cn = null;
+	
+		PreparedStatement psm = null;
+	 
+	
+		try{
+		
+	
+			cn= MySqlConexion.getConexion();
+	
+			String  sql ="call usp_registrarUsuario(?,?,?,?,?,?,?,?,?,?,?,?)";
+	
+			psm = cn.prepareCall(sql);
+		
+			psm.setString(1, regUsu.getCodigo());
+			psm.setString(2, regUsu.getUsuario());
+			psm.setString(3, regUsu.getPassword());
+			psm.setInt(4, regUsu.getId_rol());
+			psm.setBoolean(5, regUsu.isEmpleado());
+			psm.setString(6, regUsu.getApellidos());
+			psm.setString(7, regUsu.getNombres());
+			psm.setObject(8, regUsu.getFecha_nac());
+			psm.setString(9, regUsu.getCelular());
+			psm.setString(10, regUsu.getCorreo());
+			psm.setDouble(11, regUsu.getSalario());
+			psm.setBoolean(12, regUsu.isEstado());
+		//psm.setString(1, regUsu.getCodigo());
+		//psm.setString(2, regUsu.getUsuario());
+		//psm.setString(3, regUsu.getPassword());
+		//psm.setObject(4, regUsu.getFec_ultimases());
+		//psm.setInt(5, regUsu.getId_rol());
+		//psm.setObject(6, regUsu.getFec_crea());
+		//psm.setObject(7, regUsu.getFec_modif());
+		//psm.setBoolean(8, regUsu.isEmpleado());
+		//psm.setString(9, regUsu.getApellidos());
+		//psm.setString(10, regUsu.getNombres());
+		//psm.setObject(11, regUsu.getFecha_nac());
+		//psm.setString(12, regUsu.getCelular());
+		//psm.setString(13, regUsu.getCorreo());
+		//psm.setDouble(14, regUsu.getSalario());
+		//psm.setBoolean(15, regUsu.isEstado());
+	
+		value = psm.executeUpdate();
+		
+		
+		
+	}catch(Exception e) {
+		e.printStackTrace();
+		
+		
+	}finally {
+		
+		try{
+		 if(cn != null)cn.close();
+		 if(psm != null)psm.close();
+			
+		}catch(Exception e) {
+			
+			e.printStackTrace();
+		}
+		
+	}
+		
+		
+		return value;
+	}
+
+	
+	public List<Usuario> listarUsuarios() {
+		List<Usuario> listaUsuarios = new ArrayList<Usuario>();
+		Connection cn = null;
+		PreparedStatement psm = null;
+		ResultSet rs = null;
+		
+		try {
+			cn = MySqlConexion.getConexion();
+			String sql = "select id, codigo, usuario, apellidos, nombres, celular, rol, estado FROM usuario";
+			psm = cn.prepareStatement(sql);
+			rs = psm.executeQuery();
+			
+			while(rs.next()) {
+				Usuario usuario = new Usuario();
+				usuario.setId(rs.getInt("id"));
+				usuario.setCodigo(rs.getString("codigo"));
+				usuario.setUsuario(rs.getString("usuario"));
+				//usuario.setPassword(rs.getString("Password"));
+				//usuario.setFec_ultimases((LocalDateTime)rs.getObject("ultima_sesion"));
+				//usuario.setId_rol(rs.getInt("Rol"));
+				//usuario.setFec_crea((LocalDateTime)rs.getObject("fecha_crea"));
+				//usuario.setFec_modif((LocalDateTime)rs.getObject("fecha_modif"));
+				//usuario.setEmpleado(rs.getBoolean("empleado"));
+				usuario.setApellidos(rs.getString("apellidos"));
+				usuario.setNombres(rs.getString("nombres"));
+				//usuario.setFecha_nac((LocalDate)rs.getObject("fecha_nac"));
+				usuario.setCelular(rs.getString("celular"));
+				//usuario.setSalario(rs.getDouble("salario"));
+				usuario.setEstado(rs.getBoolean("estado"));
+				
+				
+				
+				listaUsuarios.add(usuario);
+			}
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if(rs!=null) rs.close();
+				if(psm!=null) psm.close();
+				if(cn!=null) cn.close();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		return listaUsuarios;
+	}
+
+
+	public int modifUsuario(Usuario modifUsu) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+
+	public void elimUsuario(int id) {
+		Connection cn = null;
+	    PreparedStatement psm = null;
+	    
+	    try {
+	        cn = MySqlConexion.getConexion();
+	        String sql = "DELETE FROM usuario WHERE id = ?"; //cambiar pronto a=  "call usp_eliminarUsuario(?)"
+	        psm = cn.prepareStatement(sql);
+	        psm.setInt(1, id);
+	        psm.executeUpdate();
+	        
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    } finally {
+	        try {
+	            if(psm != null) psm.close();
+	            if(cn != null) cn.close();
+	        } catch (Exception e) {
+	            e.printStackTrace();
+	        }
+	    }
+		
+	}
+
+
+	public int obPorid(int id) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+
+	
+	public Usuario buscarUsuarioPorId(int id) {
+		Usuario usuario = null;
+	    Connection cn = null;
+	    PreparedStatement psm = null;
+	    ResultSet rs = null;
+	    
+	    try {
+	        cn = MySqlConexion.getConexion();
+	        // Aquí traes TODOS los campos porque estás viendo la ficha completa
+	        String sql = "SELECT id, codigo, usuario, ultima_sesion, rol, fecha_crea, fecha_modif, " +
+	                     "empleado, apellidos, nombres, fecha_nac, celular, salario, estado " +
+	                     "FROM usuario WHERE id = ?";
+	                     
+	        psm = cn.prepareStatement(sql);
+	        psm.setInt(1, id);
+	        rs = psm.executeQuery();
+	        
+	        if(rs.next()) {
+	            usuario = new Usuario();
+	            usuario.setId(rs.getInt("id"));
+	            usuario.setCodigo(rs.getString("codigo"));
+	            usuario.setUsuario(rs.getString("usuario"));
+	            // usuario.setPassword(rs.getString("Password")); // Omitido por seguridad en la vista
+	            usuario.setFec_ultimases((LocalDateTime)rs.getObject("ultima_sesion"));
+	            usuario.setId_rol(rs.getInt("rol"));
+	            usuario.setFec_crea((LocalDateTime)rs.getObject("fecha_crea"));
+	            usuario.setFec_modif((LocalDateTime)rs.getObject("fecha_modif"));
+	            usuario.setEmpleado(rs.getBoolean("empleado"));
+	            usuario.setApellidos(rs.getString("apellidos"));
+	            usuario.setNombres(rs.getString("nombres"));
+	            usuario.setFecha_nac((LocalDate)rs.getObject("fecha_nac"));
+	            usuario.setCelular(rs.getString("celular"));
+	            usuario.setSalario(rs.getDouble("salario"));
+	            usuario.setEstado(rs.getBoolean("estado"));
+	        }
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    } finally {
+	        try {
+	        	if(cn != null)cn.close();
+	        	if(psm != null)psm.close();
+	        	if(rs != null)rs.close();
+	        }catch(Exception e) {
+	        	e.printStackTrace();
+	        	
+	        }
+	    }
+	    
+	    return usuario;
+	}
+
+	
+
+
+
+}

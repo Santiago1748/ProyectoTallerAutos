@@ -1,0 +1,58 @@
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+<%
+    // Validación de sesión opcional con Java (si usas JSP)
+    HttpSession sesionActual = request.getSession(false);
+    if (sesionActual == null || sesionActual.getAttribute("usuario") == null) {
+        // Redirigir al login si no hay sesión
+        // response.sendRedirect("login.jsp");
+        // return;
+    }
+    String nombresCompletos = "Administrador Taller";
+    String nombreRol = "Jefe de Taller";
+%>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Taller Fortuna — Panel de control</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<!-- Enlace al archivo CSS externo -->
+<link rel="stylesheet" href="css/index.css">
+</head>
+<body>
+<div class="shell">
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="brand-mark"></div>
+      <div class="brand-text"><p class="display">Taller Fortuna</p><span>Panel de gestión</span></div>
+    </div>
+    <!-- MENÚ LATERAL TRADICIONAL CON ENLACES DIRECTOS A JSP -->
+    <nav id="nav">
+      <ul>
+        <li><a href="resumen.jsp">Resumen</a></li>
+        <li><a href="nueva_orden.jsp">Nueva orden</a></li>
+        <li><a href="ordenes.jsp">Órdenes de servicio</a></li>
+        <li><a href="clientes.jsp">Clientes</a></li>
+        <li><a href="vehiculos.jsp">Vehículos</a></li>
+        <li><a href="repuestos.jsp">Repuestos y servicios</a></li>
+        <li><a href="compras.jsp">Compras</a></li>
+        <li><a href="usuarios.jsp">Usuarios</a></li>
+        <li><a href="reportes.jsp">Reportes</a></li>
+      </ul>
+    </nav>
+    <nav id="nav"></nav>
+    <div class="user-box">
+      <div class="u-name"><%= nombresCompletos %></div>
+      <div class="u-rol"><%= nombreRol %></div>
+      <button class="btn-logout" onclick="logout()">Cerrar sesión</button>
+    </div>
+  </aside>
+  <main id="main"></main>
+</div>
+
+<!-- Enlace al archivo JS externo -->
+<script src="js/index.js"></script>
+</body>
+</html>

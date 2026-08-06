@@ -1,0 +1,88 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page import="java.util.List" %>
+<%@ page import="entidad.Usuario" %>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Listado de Usuarios</title>
+<style>
+    body { font-family: Arial, sans-serif; margin: 30px; background-color: #f4f7f6; }
+    .list-container { background: #ffffff; padding: 25px; border-radius: 8px; max-width: 900px; box-shadow: 0px 0px 10px rgba(0,0,0,0.1); }
+    table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+    th, td { padding: 10px; text-align: left; border-bottom: 1px solid #ddd; }
+    th { background-color: #007bff; color: white; }
+    tr:hover { background-color: #f1f1f1; }
+    .btn-new { display: inline-block; margin-top: 15px; padding: 10px 15px; background-color: #007bff; color: white; text-decoration: none; border-radius: 4px; }
+    .btn-new:hover { background-color: #0056b3; }
+    .btn-eliminar { color: #dc3545; text-decoration: none; font-weight: bold; }
+    .btn-eliminar:hover { text-decoration: underline; }
+    .badge-activo { background-color: #d4edda; color: #155724; padding: 3px 8px; border-radius: 4px; font-size: 13px; }
+    .badge-inactivo { background-color: #f8d7da; color: #721c24; padding: 3px 8px; border-radius: 4px; font-size: 13px; }
+</style>
+</head>
+<body>
+
+<div class="list-container">
+    <h2>Listado de Usuarios</h2>
+
+    <% if(request.getAttribute("mensaje") != null){ %>
+        <div class="alert-msg"><%= request.getAttribute("mensaje") %></div>
+    <% } %>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Código</th>
+                <th>Usuario</th>
+                <th>Apellidos</th>
+                <th>Nombres</th>
+                <th>Celular</th>
+                <th>Rol</th>
+                <th>Estado</th>
+                <th>Acción</th>
+            </tr>
+        </thead>
+        <tbody>
+            <%
+                List<Usuario> listado = (List<Usuario>) request.getAttribute("listado");
+                if(listado != null && !listado.isEmpty()){
+                    for(Usuario u : listado){
+            %>
+            <tr>
+                <td><%= u.getCodigo() %></td>
+                <td><%= u.getUsuario() %></td>
+                <td><%= u.getApellidos() %></td>
+                <td><%= u.getNombres() %></td>
+                <td><%= u.getCelular() %></td>
+                <td><%= u.getId_rol() %></td>
+                <td>
+                    <% if(u.isEstado()){ %>
+                        <span class="badge-activo">Activo</span>
+                    <% } else { %>
+                        <span class="badge-inactivo">Inactivo</span>
+                    <% } %>
+                </td>
+                <td>
+                    <a class="btn-eliminar" href="UsuarioServlet?tipo=eliminar&id=<%= u.getId() %>"
+                       onclick="return confirm('¿Seguro que deseas eliminar este usuario?');">Eliminar</a>
+                </td>
+            </tr>
+            <%
+                    }
+                } else {
+            %>
+            <tr>
+                <td colspan="8" style="text-align:center;">No hay usuarios registrados.</td>
+            </tr>
+            <%
+                }
+            %>
+        </tbody>
+    </table>
+
+    <a href="mantenUsuario.jsp" class="btn-new">+ Registrar nuevo usuario</a>
+</div>
+
+</body>
+</html>

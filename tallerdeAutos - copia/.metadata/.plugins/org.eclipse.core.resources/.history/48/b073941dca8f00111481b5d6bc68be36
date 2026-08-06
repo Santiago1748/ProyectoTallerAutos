@@ -1,0 +1,43 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+
+
+<%
+    String uri = request.getRequestURI();
+%>
+<aside class="sidebar">
+  <div class="brand">
+    <div class="brand-mark"></div>
+    <div class="brand-text">
+      <p class="display">Taller Fortuna</p>
+      <span>Panel de gestión</span>
+    </div>
+  </div>
+
+  <nav>
+    <a class="nav-item" href="#">Dashboard</a>
+    <a class="nav-item" href="#">Clientes</a>
+    <a class="nav-item" href="#">Vehículos</a>
+    <a class="nav-item" href="#">Repuestos</a>
+    <a class="nav-item" href="#">Mecánicos</a>
+    <a class="nav-item <%= uri.contains("Usuario") || uri.contains("mantenUsuario") ? "active" : "" %>"
+       href="UsuarioServlet?tipo=lis">Usuarios</a>
+    <a class="nav-item" href="#">Órdenes de servicio</a>
+    <a class="nav-item" href="#">Reportes</a>
+  </nav>
+
+  <div class="user-box">
+    <div class="u-name">Administrador</div>
+    <div class="u-rol">Sesión activa</div>
+    <a href="LogoutServlet" class="btn-logout">Cerrar sesión</a>
+  </div>
+</aside>
+</body>
+</html>

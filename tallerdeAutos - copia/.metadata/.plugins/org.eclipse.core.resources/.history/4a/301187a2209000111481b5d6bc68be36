@@ -1,0 +1,80 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page import="java.util.List" %>
+<%@ page import="entidad.Usuario" %>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Listado de Usuarios</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Taller Fortuna — Usuarios</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="<%=request.getContextPath()%>/css/dashboard.css">
+</head>
+<body>
+
+<div class="list-container">
+    <h2>Listado de Usuarios</h2>
+
+    <% if(request.getAttribute("mensaje") != null){ %>
+        <div class="alert-msg"><%= request.getAttribute("mensaje") %></div>
+    <% } %>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Código</th>
+                <th>Usuario</th>
+                <th>Apellidos</th>
+                <th>Nombres</th>
+                <th>Celular</th>
+                <th>Rol</th>
+                <th>Estado</th>
+                <th>Acción</th>
+            </tr>
+        </thead>
+        <tbody>
+            <%
+                List<Usuario> listado = (List<Usuario>) request.getAttribute("listado");
+                if(listado != null && !listado.isEmpty()){
+                    for(Usuario u : listado){
+            %>
+            <tr>
+                <td><%= u.getCodigo() %></td>
+                <td><%= u.getUsuario() %></td>
+                <td><%= u.getApellidos() %></td>
+                <td><%= u.getNombres() %></td>
+                <td><%= u.getCelular() %></td>
+                <td><%= u.getId_rol() %></td>
+                <td>
+                    <% if(u.isEstado()){ %>
+                        <span class="badge-activo">Activo</span>
+                    <% } else { %>
+                        <span class="badge-inactivo">Inactivo</span>
+                    <% } %>
+                </td>
+                <td>
+                    <a class="btn-eliminar" href="UsuarioServlet?tipo=eliminar&id=<%= u.getId() %>"
+                       onclick="return confirm('¿Seguro que deseas eliminar este usuario?');">Eliminar</a>
+                </td>
+            </tr>
+            <%
+                    }
+                } else {
+            %>
+            <tr>
+                <td colspan="8" style="text-align:center;">No hay usuarios registrados.</td>
+            </tr>
+            <%
+                }
+            %>
+        </tbody>
+    </table>
+
+    <a href="mantenUsuarios.jsp" class="btn-new">+ Registrar nuevo usuario</a>
+</div>
+
+</body>
+</html>

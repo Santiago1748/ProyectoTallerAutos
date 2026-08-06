@@ -1,0 +1,77 @@
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Taller Fortuna — Ingresar</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<!-- Corrección: El link va directo en el head, sin la etiqueta style -->
+<link rel="stylesheet" href="<%=request.getContextPath()%>/css/login.css">
+
+</head>
+<body>
+
+<div class="hazard-bar"></div>
+
+<main class="login-wrap">
+  <div class="login-card">
+
+    <div class="brand">
+      <div class="brand-mark"></div>
+      <div class="brand-text">
+        <p class="display">Taller Fortuna</p>
+        <span>Panel de gestión</span>
+      </div>
+    </div>
+
+    <h1>Ingresar</h1>
+    <p class="sub">Ingresa con tu usuario y contraseña asignados.</p>
+
+    <%
+        String error = (String) request.getAttribute("error");
+    %>
+    <% if (error != null) { %>
+    <div class="alert-error" role="alert">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16h.01"/></svg>
+      <span><%= error %></span>
+    </div>
+    <% } %>
+
+    <form action="LoginServlet?opc=login" method="POST" id="loginForm" novalidate>
+
+      <label class="field">
+        <span class="field-label">Usuario</span>
+        <input type="text" name="txtUsuario" id="usuario" placeholder="ej. drojas" autocomplete="username" required>
+      </label>
+
+      <label class="field">
+        <span class="field-label">Contraseña</span>
+        <div class="password-box">
+          <input type="password" name="txtPassword" id="password" placeholder="••••••••" autocomplete="current-password" required>
+          <button type="button" id="togglePassword" class="toggle-btn" aria-label="Mostrar contraseña">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg>
+          </button>
+        </div>
+      </label>
+
+      <p class="field-error" id="formError"></p>
+
+      <button type="submit" class="btn-submit">Ingresar</button>
+    </form>
+
+    <div class="login-foot">
+      <span class="shift-dot"></span>Sistema de gestión — Taller Fortuna
+    </div>
+  </div>
+</main>
+
+<!-- Corrección: El script se llama directamente sin anidar etiquetas script -->
+<script src="${pageContext.request.contextPath}/js/login.js"></script>
+
+</body>
+</html>

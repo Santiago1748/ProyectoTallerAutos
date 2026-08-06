@@ -1,0 +1,27 @@
+package interfaces;
+import entidad.Usuario;
+import java.util.ArrayList;
+import java.util.List;
+
+public interface UsuarioInterface {
+	
+	
+	//Crear
+	public int regisUsuario(Usuario regUsu);
+	//listar
+	public List<Usuario> listarUsuarios();
+	//modificar
+	public int modifUsuario(Usuario modifUsu);
+	//Eliminar
+	public void elimUsuario(int id);
+	
+	//buscarususarioporId para consul de todos los detalles
+	public Usuario buscarUsuarioPorId(int id);
+	
+	
+	// obtenerporid
+	
+	public int obPorid(int id);
+
+	
+}

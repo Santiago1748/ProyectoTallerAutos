@@ -1,0 +1,50 @@
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Taller Mecánico — Panel de Control</title>
+    <!-- Fuentes de Google -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <!-- Enlace al archivo CSS externo -->
+    <link rel="stylesheet" href="css/estilos.css">
+</head>
+<body>
+
+    <!-- Contenedor General del Layout (Estructura de 2 columnas) -->
+    <div class="shell">
+        
+        <!-- 1. Barra Lateral / Sidebar (Menú de navegación y sesión) -->
+        <aside class="sidebar">
+            <div class="brand">
+                <div class="brand-mark"></div>
+                <div class="brand-text">
+                    <p class="display">Taller Fortuna</p>
+                    <span>Panel de gestión</span>
+                </div>
+            </div>
+            
+            <!-- Aquí se inyecta dinámicamente el menú desde el JS -->
+            <nav id="nav"></nav>
+            
+            <!-- Caja de información del usuario y cierre de sesión -->
+            <div class="user-box">
+                <div class="u-name">Administrador Taller</div>
+                <div class="u-rol">Jefe de Taller</div>
+                <button class="btn-logout" onclick="logout()">Cerrar sesión</button>
+            </div>
+        </aside>
+
+        <!-- 2. Área de Contenido Principal (Dinámica) -->
+        <main id="main">
+            <!-- El contenido de las secciones (Dashboard, Órdenes, Clientes, etc.) se carga aquí automáticamente -->
+        </main>
+
+    </div>
+
+    <!-- Enlace al archivo JavaScript externo -->
+    <script src="js/index.js"></script>
+</body>
+</html>

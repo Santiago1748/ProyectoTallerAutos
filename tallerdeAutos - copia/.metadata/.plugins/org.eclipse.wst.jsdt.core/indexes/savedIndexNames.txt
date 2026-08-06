@@ -1,0 +1,7 @@
+INDEX VERSION 1.4+D:\tallerdeAutos - copia\.metadata\.plugins\org.eclipse.wst.jsdt.core\indexes
+731937847.index
+2583660393.index
+561425208.index
+2547536051.index
+1259965754.index
+3829681999.index

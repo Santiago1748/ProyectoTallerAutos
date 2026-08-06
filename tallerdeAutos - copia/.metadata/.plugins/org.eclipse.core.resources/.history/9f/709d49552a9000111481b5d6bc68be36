@@ -1,0 +1,35 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+ <div>
+    <main>
+      <div>
+
+      <section class="view" id="view-reportes">
+        <div class="section-title"><h2>Reportes</h2></div>
+        <div class="grid-2">
+          <div class="panel">
+            <h3>Ingresos por período (últimos 6 meses)</h3>
+            <div id="ingresosBars"></div>
+          </div>
+          <div class="panel">
+            <h3>Productividad de mecánicos — horas prom. por orden</h3>
+            <div id="productividadBars"></div>
+          </div>
+        </div>
+      </section>
+
+    </div>
+  </main>
+</div>
+
+<div class="toast-stack" id="toastStack"></div>
+
+</body>
+</html>

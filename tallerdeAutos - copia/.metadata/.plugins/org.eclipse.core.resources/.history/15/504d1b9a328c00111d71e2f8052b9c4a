@@ -1,0 +1,42 @@
+function cargarModulo(nombreModulo) {
+    fetch(`modulos/${nombremodulo}.jsp`)
+        .then(response => {
+            if (!response.ok) throw new Error("No se pudo cargar el módulo");
+            return response.text();
+        })
+        .then(html => {
+            document.getElementById('main').innerHTML = html;
+        })
+        .catch(error => {
+            console.error("Error:", error);
+            document.getElementById('main').innerHTML = "<p>Error al cargar la sección.</p>";
+        });
+}
+// 2. Generar los botones del menú lateral automáticamente al cargar la página
+document.addEventListener("DOMContentLoaded", () => {
+    const navContainer = document.getElementById("nav");
+    
+    // Lista de opciones que coinciden con tus archivos JSP en la carpeta 'modulos/'
+    const menuItems = [
+        { id: "resumen", label: "Resumen" },
+        { id: "nueva_orden", label: "Nueva orden" },
+        { id: "ordenes", label: "Órdenes de servicio" },
+        { id: "clientes", label: "Clientes" },
+        { id: "vehiculos", label: "Vehículos" },
+        { id: "repuestos", label: "Repuestos y servicios" },
+        { id: "compras", label: "Compras" },
+        { id: "usuarios", label: "Usuarios" },
+        { id: "reportes", label: "Reportes" }
+    ];
+
+    let htmlMenu = "<ul>";
+    menuItems.forEach(item => {
+        htmlMenu += `<li><button onclick="cargarModulo('${item.id}')">${item.label}</button></li>`;
+    });
+    htmlMenu += "</ul>";
+
+    navContainer.innerHTML = htmlMenu;
+
+    // Cargar por defecto la vista de resumen al entrar
+    cargarModulo("resumen");
+});

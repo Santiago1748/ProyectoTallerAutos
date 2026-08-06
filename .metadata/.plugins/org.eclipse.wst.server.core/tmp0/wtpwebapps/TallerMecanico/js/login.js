@@ -1,0 +1,37 @@
+document.addEventListener('DOMContentLoaded', function () {
+
+  // Mostrar / ocultar contraseña
+  var toggleBtn = document.getElementById('togglePassword');
+  var passwordInput = document.getElementById('password');
+
+  toggleBtn.addEventListener('click', function () {
+    var isHidden = passwordInput.type === 'password';
+    passwordInput.type = isHidden ? 'text' : 'password';
+    toggleBtn.setAttribute('aria-label', isHidden ? 'Ocultar contraseña' : 'Mostrar contraseña');
+  });
+
+  // Validación simple antes de enviar al servlet
+  var form = document.getElementById('loginForm');
+  var usuarioInput = document.getElementById('usuario');
+  var formError = document.getElementById('formError');
+
+  form.addEventListener('submit', function (e) {
+    var usuario = usuarioInput.value.trim();
+    var password = passwordInput.value.trim();
+
+    usuarioInput.classList.remove('input-error');
+    passwordInput.classList.remove('input-error');
+    formError.textContent = '';
+
+    if (!usuario || !password) {
+      e.preventDefault();
+      if (!usuario) usuarioInput.classList.add('input-error');
+      if (!password) passwordInput.classList.add('input-error');
+      formError.textContent = 'Completa usuario y contraseña para continuar.';
+      return;
+    }
+  });
+
+});
+
+ 

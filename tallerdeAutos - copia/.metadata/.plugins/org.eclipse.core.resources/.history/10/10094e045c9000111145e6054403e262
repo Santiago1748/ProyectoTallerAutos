@@ -1,0 +1,182 @@
+package servlet;
+import entidad.Usuario;
+import model.UsuarioModel;
+import java.io.IOException;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.List;
+
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+/**
+ * Servlet implementation class UsuarioServlet
+ */
+@WebServlet("/UsuarioServlet")
+public class UsuarioServlet extends HttpServlet {
+	private static final long serialVersionUID = 1L;
+       
+    /**
+     * @see HttpServlet#HttpServlet()
+     */
+    public UsuarioServlet() {
+        super();
+        // TODO Auto-generated constructor stub
+    }
+
+	/**
+	 * @see HttpServlet#service(HttpServletRequest request, HttpServletResponse response)
+	 */
+	protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		String tipo = request.getParameter("tipo");
+		switch(tipo) {
+		case "lis": listarUsuario(request,response); break;
+		case "regis": registrarUsuario(request,response);break;
+		case "buscarUPorId": buscarUsuarioPorId(request, response);break;
+		case "info": detalleUsuario(request,response);break;
+		case "edit": actualizarUsuario(request,response); break;
+		case "grabaredit": grabarActuqalizarUsuario(request, response); break;
+		
+		case "eliminar": eliminarUsuario(request,response); break;
+		default:
+			request.setAttribute("mensaje", "Ocurrió un problema");
+			request.getRequestDispatcher("mantenUsuario.jsp").forward(request, response);
+		
+		
+		}
+		
+		
+		
+		
+	}
+
+	private void buscarUsuarioPorId(HttpServletRequest request, HttpServletResponse response)throws ServletException, IOException {
+		
+		
+	}
+
+	
+
+	protected void registrarUsuario(HttpServletRequest request, HttpServletResponse response)throws ServletException, IOException {
+		
+		String codigo = request.getParameter("txtCod");
+		LocalDateTime ultimaSesion = LocalDateTime.now();//la fecha de hoy por defecto
+		String usuario = request.getParameter("txtUsuario");
+		String password = request.getParameter("txtPassword");
+		 
+	    
+		
+	    String rol = request.getParameter("rol");
+	    int id_rol = Integer.parseInt(rol);
+	    
+	    LocalDateTime fecha_crea = LocalDateTime.now();
+	    LocalDateTime fecha_modif = LocalDateTime.now();
+	    
+	    String  empleadoStr = request.getParameter("cboEmpleado");//lo captura como string al booleano
+		// 2. Lo conviertes a un booleano (aquí agregas esta parte)
+	    boolean empleado = Boolean.parseBoolean(empleadoStr);
+	    String apellidos = request.getParameter("txtApellidos");
+	    String nombres = request.getParameter("txtNombres");
+	    
+	    String fechaNacStr = request.getParameter("txtFechaNac");
+	    LocalDate fecha_nac = null;
+	    if (fechaNacStr != null && !fechaNacStr.isEmpty()) {
+	        fecha_nac = LocalDate.parse(fechaNacStr); // Convierte el String a LocalDate
+	    }
+	    String celular = request.getParameter("txtCelular");
+	    String correo = request.getParameter("txtCorreo");
+	    double salario = Double.parseDouble(request.getParameter("txtSalario"));
+	    String estadoStr = request.getParameter("cboEstado");
+	    boolean estado = Boolean.parseBoolean(estadoStr);
+	    
+	    Usuario usuario1 = new Usuario();
+	    usuario1.setCodigo(codigo);
+	    usuario1.setFec_ultimases(ultimaSesion);
+	    usuario1.setUsuario(usuario);
+	    usuario1.setPassword(password);
+	    usuario1.setId_rol(id_rol);
+	    usuario1.setFec_crea(fecha_crea);
+	    usuario1.setFec_modif(fecha_modif);
+	    usuario1.setEmpleado(empleado);
+	    usuario1.setApellidos(apellidos);
+	    usuario1.setNombres(nombres);
+	    usuario1.setFecha_nac(fecha_nac);
+	    usuario1.setCelular(celular);
+	    usuario1.setCorreo(correo);
+	    usuario1.setSalario(salario);
+	    usuario1.setEstado(estado);
+	  
+	    
+	    
+	    UsuarioModel model = new UsuarioModel();
+	    
+	    int value =  model.regisUsuario(usuario1);
+	    
+	    if(value == 1) {
+	    	listarUsuario(request, response);
+		} else {
+			request.setAttribute("mensaje", "Ocurrio un problema");
+			request.getRequestDispatcher("mantenUsuarios.jsp").forward(request, response);
+		}
+	    
+	    
+	    if(value >= 1) {
+	        request.setAttribute("mensaje", "Usuario registrado correctamente");
+	        request.getRequestDispatcher("listUsuarios.jsp").forward(request, response);
+	    } else if(value == -2) {
+	        request.setAttribute("mensaje", "Ese código de usuario ya existe. Usa uno diferente.");
+	        request.getRequestDispatcher("mantenUsuarios.jsp").forward(request, response);
+	    } else {
+	        request.setAttribute("mensaje", "Ocurrió un problema al registrar");
+	        request.getRequestDispatcher("mantenUsuarios.jsp").forward(request, response);
+	    }
+	    
+		
+	}
+	
+
+	protected void listarUsuario(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException{
+		 UsuarioModel model = new UsuarioModel();
+		 List<Usuario> lista = model.listarUsuarios();
+		
+		// request.setAttribute("listado", lista);
+		 //request.getRequestDispatcher("listUsuarios.jsp").forward(request, response);
+		 
+		
+	}
+	protected  void eliminarUsuario(HttpServletRequest request, HttpServletResponse response)throws ServletException, IOException {
+		int id = Integer.parseInt(request.getParameter("id"));
+	    UsuarioModel model = new UsuarioModel();
+	   int  value = model.elimUsuario(id);
+
+		if(value == 1) {
+			listarUsuario(request, response);
+		} else {
+				request.setAttribute("mensaje", "Ocurrio un problema");
+				request.getRequestDispatcher("listUsuarios.jsp").forward(request, response);
+		}
+		
+	}
+
+	protected void grabarActuqalizarUsuario(HttpServletRequest request, HttpServletResponse response)throws ServletException, IOException {
+		
+		
+	}
+
+	protected void actualizarUsuario(HttpServletRequest request, HttpServletResponse response)throws ServletException, IOException {
+		// TODO Auto-generated method stub
+		
+	}
+
+	protected void detalleUsuario(HttpServletRequest request, HttpServletResponse response)throws ServletException, IOException {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+
+
+}

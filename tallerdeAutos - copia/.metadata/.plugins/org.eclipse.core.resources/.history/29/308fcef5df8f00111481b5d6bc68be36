@@ -1,0 +1,13 @@
+package DAO;
+
+import interfaces.UsuarioInterface;
+
+public class MySqlDAOFactory extends DAOFactory {
+
+	
+	public UsuarioInterface getUsuarioDAO() {
+	
+		return new MySqlLoginUsuarioDAO();
+	}
+
+}

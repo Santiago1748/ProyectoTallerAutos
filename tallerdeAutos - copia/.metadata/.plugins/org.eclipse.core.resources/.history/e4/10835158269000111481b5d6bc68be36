@@ -1,0 +1,106 @@
+/* --- ESTILOS ADAPTADOS A TU HTML EXISTENTE --- */
+
+:root {
+  --bg-main: #18181b;
+  --bg-sidebar: #121215;
+  --bg-card: #1e1e24;
+  --color-orange: #f59e0b;
+  --color-orange-hover: #d97706;
+  --text-light: #e4e4e7;
+  --text-muted: #a1a1aa;
+  --border-color: #27272a;
+}
+
+/* Fondo general de la aplicación */
+body {
+  background-color: var(--bg-main);
+  color: var(--text-light);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  margin: 0;
+}
+
+/* Barra lateral (si aplica en tu diseño) */
+aside, .sidebar {
+  background-color: var(--bg-sidebar);
+  border-right: 1px solid var(--border-color);
+}
+
+/* Título principal de la vista */
+h2, .main-title {
+  color: var(--text-light);
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+/* Botón de Registrar / Acciones Principales en Ámbar */
+button, .btn, input[type="submit"] {
+  transition: background-color 0.3s ease, transform 0.1s ease;
+}
+
+/* Estilo para los botones principales de acción (Registrar / + Registrar nuevo usuario) */
+button:not(.btn-secondary), .btn-primary, input[type="submit"] {
+  background-color: var(--color-orange) !important;
+  color: #121215 !important;
+  font-weight: bold;
+  border: none;
+  border-radius: 6px;
+}
+
+button:not(.btn-secondary):hover, .btn-primary:hover, input[type="submit"]:hover {
+  background-color: var(--color-orange-hover) !important;
+}
+
+/* Contenedores de tablas o tarjetas manteniendo la línea estética */
+table, .card, .modal {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-color);
+  color: var(--text-light);
+}
+
+/* Cabeceras de tablas con aspecto de banda de goma (textura sutil) */
+th {
+  background-color: var(--bg-sidebar) !important;
+  background-image: repeating-linear-gradient(
+    45deg,
+    rgba(255, 255, 255, 0.02) 0px,
+    rgba(255, 255, 255, 0.02) 2px,
+    transparent 2px,
+    transparent 4px
+  ) !important;
+  color: var(--color-orange) !important;
+  border-bottom: 2px solid var(--border-color) !important;
+}
+
+/* Celdas y filas */
+td {
+  border-bottom: 1px solid var(--border-color) !important;
+  color: var(--text-light);
+}
+
+/* Campos de entrada (Inputs y Selects) con textura de banda de goma */
+input[type="text"],
+input[type="password"],
+input[type="email"],
+input[type="number"],
+select,
+textarea {
+  background-color: var(--bg-sidebar) !important;
+  background-image: repeating-linear-gradient(
+    45deg,
+    rgba(255, 255, 255, 0.02) 0px,
+    rgba(255, 255, 255, 0.02) 2px,
+    transparent 2px,
+    transparent 4px
+  ) !important;
+  border: 1px solid var(--border-color) !important;
+  color: var(--text-light) !important;
+  border-radius: 6px;
+  padding: 8px 12px;
+}
+
+/* Foco en inputs para resaltar en color ámbar */
+input:focus, select:focus, textarea:focus {
+  border-color: var(--color-orange) !important;
+  outline: none;
+  box-shadow: 0 0 5px rgba(245, 158, 11, 0.3);
+}

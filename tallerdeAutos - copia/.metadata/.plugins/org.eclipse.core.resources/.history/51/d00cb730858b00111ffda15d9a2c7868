@@ -1,0 +1,42 @@
+package model;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+
+import entidad.Usuario;
+import interfaces.UsuarioInterface;
+
+public class UsuarioModel implements UsuarioInterface{
+
+	
+	public int RegistrarUsuario(Usuario regUsu) {
+	 int value = 0;
+	 Connection cn = null;
+	 PreparedStatement psm = null;
+	 
+	
+		
+		
+		return value;
+	}
+
+
+	public int ModificarUsuario(Usuario modifUsu) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	
+	public void EliminarUsuario(int id) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	
+	public int ObtenerPorid(int id) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+	
+
+}

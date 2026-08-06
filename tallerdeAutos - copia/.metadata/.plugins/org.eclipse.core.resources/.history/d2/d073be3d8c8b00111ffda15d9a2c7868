@@ -1,0 +1,14 @@
+function cargarModulo(nombreModulo) {
+    fetch(`modulos/${nombreModulo}.jsp`)
+        .then(response => {
+            if (!response.ok) throw new Error("No se pudo cargar el módulo");
+            return response.text();
+        })
+        .then(html => {
+            document.getElementById('main').innerHTML = html;
+        })
+        .catch(error => {
+            console.error("Error:", error);
+            document.getElementById('main').innerHTML = "<p>Error al cargar la sección.</p>";
+        });
+}

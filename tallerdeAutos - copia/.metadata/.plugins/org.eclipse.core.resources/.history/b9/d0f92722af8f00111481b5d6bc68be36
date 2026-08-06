@@ -1,0 +1,10 @@
+package entidad;
+
+public class Loging {
+
+	public int idusuario;
+	public String nombre;
+	public String apellido;
+	public String usuario;
+	public String clave;
+}

@@ -1,0 +1,84 @@
+package model;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+
+import entidad.Usuario;
+import interfaces.UsuarioInterface;
+import util.MySqlConexion;
+
+public class UsuarioModel implements UsuarioInterface{
+
+	
+	public int RegistrarUsuario(Usuario regUsu) {
+	 int value = 0;
+	 Connection cn = null;
+	 PreparedStatement psm = null;
+	 
+	try{
+		
+		cn= MySqlConexion.getConexion();
+		String  sql ="Insert into usuario values (null, ?,?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?,?,?)";
+		psm = cn.prepareStatement(sql);
+		
+		psm.setString(1, regUsu.getCodigo());
+		psm.setString(2, regUsu.getUsuario());
+		psm.setString(3, regUsu.getPassword());
+		psm.setObject(4, regUsu.getFec_ultimases());
+		psm.setInt(5, regUsu.getId_rol());
+		psm.setObject(6, regUsu.getFec_crea());
+		psm.setObject(7, regUsu.getFec_modif());
+		psm.setBoolean(8, regUsu.isEmpleado());
+		psm.setString(9, regUsu.getApellidos());
+		psm.setString(10, regUsu.getNombres());
+		psm.setObject(11, regUsu.getFecha_nac());
+		psm.setString(12, regUsu.getCelular());
+		psm.setString(13, regUsu.getCorreo());
+		psm.setDouble(14, regUsu.getSalario());
+		psm.setBoolean(15, regUsu.isEstado());
+	
+		value = psm.executeUpdate();
+		
+		
+		
+	}catch(Exception e) {
+		e.printStackTrace();
+		
+		
+	}finally {
+		
+		try{
+		 if(cn != null)cn.close();
+		 if(psm != null)psm.close();
+			
+		}catch(Exception e) {
+			
+			e.printStackTrace();
+		}
+		
+	}
+		
+		
+		return value;
+	}
+
+
+	public int ModificarUsuario(Usuario modifUsu) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	
+	public void EliminarUsuario(int id) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	
+	public int ObtenerPorid(int id) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+	
+
+}

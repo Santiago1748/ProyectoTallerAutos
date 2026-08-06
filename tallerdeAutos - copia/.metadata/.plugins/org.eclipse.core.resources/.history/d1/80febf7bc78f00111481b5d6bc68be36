@@ -1,0 +1,45 @@
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Taller Fortuna — Panel General</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="<%=request.getContextPath()%>/css/dashboard.css">
+</head>
+<body>
+
+<div class="shell">
+
+  <%@ include file="sidebar.jsp" %>
+
+  <main>
+    <div class="page-head">
+      <div>
+        <h1>Panel General</h1>
+        <p class="subtitle">Resumen de las actividades del taller mecánico</p>
+      </div>
+    </div>
+
+    <div class="kpis">
+      <div class="kpi">
+        <p class="v" id="kpi-ordenes">0</p>
+        <p class="l">Órdenes activas</p>
+      </div>
+      <div class="kpi">
+        <p class="v" id="kpi-pausa">0</p>
+        <p class="l">En pausa</p>
+      </div>
+      <div class="kpi">
+        <p class="v" id="kpi-ingresos">$0.00</p>
+        <p class="l">Ingresos de hoy</p>
+      </div>
+    </div>
+  </main>
+
+</div>
+
+</body>
+</html>
